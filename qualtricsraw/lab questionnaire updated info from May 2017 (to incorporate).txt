@@ -1,0 +1,30 @@
+﻿Below are some updates to various answers to the lab questionnaire based on clarifying directly with the author via email.
+
+
+From purdue-infant-speech (Amanda Seidl) on May 1, 2017:
+“We use the Jusczyk hardware and software for the HPP.”
+
+
+From bcrl-unlv (Jennifer Rennels) on May 3, 2017:
+Headphones used are the “ Stanley Sync Digital AM/FM/MP3 Radio Earmuff”
+
+
+From babylab-brookes (Nayeli Gonzalez-Gomez) on May 4, 2017
+“RAs of any level (including undergraduate)” are used
+dB level should be “60 dB” [but measured prior to dB measurement changes -ms]
+
+
+From babylab-princeton (Casey Lew-Williams) on May 4, 2017
+Headphones used are “the ones recommended in the set-up questionnaire.”
+
+
+From lcd (Arielle Borovsky) on May 9, 2017
+Change in sample to be consistent with minimum N’s - “32 babies in the 9-15 month range”
+
+
+From infantcog-ubc (Hannah de Vries) on May 17, 2017
+Corrected dBA measure: “66 Db was indeed for the reference signal and 49 Db is our baseline measure”
+
+
+From musdev-utm (Laura Cirelli) on May 25, 2017
+Corrected dBA measure: 66 dBA reference, 20 dBA baseline
