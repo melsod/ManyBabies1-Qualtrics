@@ -6,6 +6,10 @@ This repo contains ALL the raw data qualtrics surveys given to MB1 participants.
 
 All data cleaning done here
 
+# metadata/
+
+*labid_main.csv* the list of labid strings that result in the main analysis script. Used to (attempt to) coerce all questionnaire lines to existing strings.  
+
 # qualtricsraw/
 
 *Lab-Questionnaire.csv* This is the raw, unedited Qualtrics output of the main “ManyBabies Laboratory Questionnaire” (i.e. the formal sign-up questionnaire for ManyBabies1). Should be final version (as of July 1, 2018).
