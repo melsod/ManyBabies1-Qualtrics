@@ -10,25 +10,23 @@ All data cleaning done here
 
 *Lab-Questionnaire.csv* This is the raw, unedited Qualtrics output of the main “ManyBabies Laboratory Questionnaire” (i.e. the formal sign-up questionnaire for ManyBabies1). Should be final version (as of July 1, 2018).
 
-*Lab-debrief-choice.csv* This is the raw, unedited Qualtrics output of the “ManyBabies1 Lab Debriefing Questionnaire”, in choice text form, currently updated through August 1, 2018.
-
 *Lab-debrief-numeric.csv* This is the raw, unedited Qualtrics output of the “ManyBabies1 Lab Debriefing Questionnaire”, in numeric form, currently updated through August 1, 2018.
 
-*LabDebriefingQuestionnaireMay2-2018.pdf* Text of the questions for the “ManyBabies1 Lab Debriefing Questionnaire”, up through May 2, 2018 (when we started discussing having a separate secondary data analysis quiz). Includes two questions about the lab's experience running MB1 style studies that are missing in the later version (moved to the debrief questionnaire).
+*MB1Debriefing_May2-2018.pdf* Text of the questions for the “ManyBabies1 Lab Debriefing Questionnaire”, up through May 2, 2018 (when we started discussing having a separate secondary data analysis quiz). Includes two questions about the lab's experience running MB1 style studies that are missing in the later version (moved to the debrief questionnaire).
 
-*Laboratory Questionnaire text.pdf* Text of the main “ManyBabies Laboratory Questionnaire”.
+*MB1Debriefing_July24-2018.pdf* Text of the questions for the “ManyBabies1 Lab Debriefing Questionnaire”, after May 2018. Excludes two questions about the lab's experience running MB1 style studies that are present in the earlier version (moved to the debrief questionnaire).
 
 *MB1MidWayCheckIn.pdf* Text of the “ManyBabies1 Mid-way Check-in” Questionnaire.
 
 *MB1ProtocolChangeForm.pdf* Text of the protocol change form used by labs to report any changes made to their protocol, sampling, or other edits to the “ManyBabies Laboratory Questionnaire”.
 
-*ManyBabies1 Lab Debriefing QuestionnaireJuly24-2018.pdf* Text of the questions for the “ManyBabies1 Lab Debriefing Questionnaire”, after May 2018. Excludes two questions about the lab's experience running MB1 style studies that are present in the earlier version (moved to the debrief questionnaire).
+*MB1Questionnaire.pdf* Text of the main “ManyBabies Laboratory Questionnaire”.
+*MB1SecondaryExit.pdf* Text of the “Secondary data analysis exit quiz”.
 
+*Lab-secondary-data-analysis-numeric.csv* This is the raw, unedited Qualtrics output of the “Secondary data analysis exit quiz”in numeric form, currently updated through August 1, 2018.
 
-*ManyBabiesQuestionnaireSpreadsheetAuthoritativeJune13-2018cleaned.csv* A “cleaned” (by hand) version of the Qualtrics output of the “ManyBabies Laboratory Questionnaire”. Spurious entries removed, columns edited to be more R friendly, a harmonized “language” column added.
-
-*Secondary data analysis exit quiz.pdf* Text of the “Secondary data analysis exit quiz”.
+## qualtricsraw/old_data_versions
 
 *Secondary-data-analysis-choicetext.csv* This is the raw, unedited Qualtrics output of the “Secondary data analysis exit quiz” in choice text form, currently updated through August 1, 2018.
 
-*Secondary-data-analysis-numeric.csv* This is the raw, unedited Qualtrics output of the “Secondary data analysis exit quiz”in numeric form, currently updated through August 1, 2018.
+*ManyBabiesQuestionnaireSpreadsheetAuthoritativeJune13-2018cleaned.csv* A “cleaned” (by hand) version of the Qualtrics output of the “ManyBabies Laboratory Questionnaire”. Spurious entries removed, columns edited to be more R friendly, a harmonized “language” column added.
