@@ -169,7 +169,9 @@ intersect(no_debrief, no_secondary)
 #########
 
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  arrange(lab)
+  arrange(lab) %>%
+  select(lab, everything())
+  
 
 q_duplicates <- lab_questionnaire_raw %>%
   group_by(lab)%>%
@@ -177,7 +179,7 @@ q_duplicates <- lab_questionnaire_raw %>%
   filter(n > 1)
 
 View(filter(lab_questionnaire_raw, lab %in% q_duplicates$lab))
-foo  = filter(lab_questionnaire_raw, lab == 'babylabutrecht')
+View(filter(lab_questionnaire_raw, lab == 'baldwinlabuoregon'))
 
 # 1 babylableiden           2
 # Most info is in second fill-out only, completed 21-03-18. Earlier version (08-02-2018) states collection to an 
@@ -225,12 +227,35 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
   mutate(dBA == ifelse(lab == 'babylabutrecht',"The maximum reached power during playback of the reference audio was 75.0±0 dB(A) SPL, 35.6±1.6 without (n=3, 10 sec.).",dBA))
 
 # 6 babylabyork             2
-# Second form primarily just adding more information, BUT the subject planned contribution bins also change. 
-#TODO: Explore more!
+# Second form adds a bit more info, but retain fuller answers on a few columns in old version
 #older version: 2017-05-05 08:39:16
-#PlannedStart: We saw the first participant on May 4. (Amended to 'no')
+#newer version: 2017-05-16 12:21:47
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'babylabyork' & StartDate == '2017-05-05 08:39:16'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'babylabyork' & StartDate == '2017-05-05 08:39:16')) %>%
+  mutate(PlannedStart = ifelse(lab == 'babylabyork',old$PlannedStart[1],PlannedStart))%>%
+  mutate(CoAuthors = ifelse(lab == 'babylabyork',old$CoAuthors[1],CoAuthors))
+
 
 # 7 baldwinlabuoregon       3
+#Keep most recent, add more informative answers from middle one
+#older versions
+middle <- lab_questionnaire_raw %>%
+  filter((lab == 'baldwinlabuoregon' & StartDate == '2018-01-15 18:39:07'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'baldwinlabuoregon' & StartDate == '2018-01-15 18:39:07')) %>%
+  filter(!(lab == 'baldwinlabuoregon' & StartDate == '2017-11-28 18:49:31')) %>%
+  mutate(Recruitment = ifelse(lab == 'babylabyork',middle$Recruitment[1],Recruitment))%>%
+  mutate(Screening = ifelse(lab == 'babylabyork',middle$Screening[1],Screening))%>%
+  mutate(Compensation_toysBooks = ifelse(lab == 'babylabyork',middle$Compensation_toysBooks[1],Compensation_toysBooks))%>%
+  mutate(Compensation_cash = ifelse(lab == 'babylabyork',middle$Compensation_cash[1],Compensation_cash))
+  
+
+
+
 # 8 cfnuofn                 2
 # 9 chosunbaby              2
 # 10 escompicbsleipzig       2
