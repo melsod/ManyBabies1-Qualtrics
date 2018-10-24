@@ -44,8 +44,8 @@ lab_secondary_names <- read_csv('metadata/lab_secondary_dict_literate.csv')
 lab_debrief_names <- read_csv('metadata/lab_debrief_dict_literate.csv')
 lab_questionnaire_names <- read_csv('metadata/lab_questionnaire_dict_literate.csv')
 
-secondary_data_raw <- secondary_data_raw %>%
-  rename_at(vars(secondary_names$var), ~ secondary_names$NewColName)
+lab_secondary_raw <- lab_secondary_raw %>%
+  rename_at(vars(lab_secondary_names$var), ~ lab_secondary_names$NewColName)
 
 lab_debrief_raw <- lab_debrief_raw %>%
   rename_at(vars(lab_debrief_names$var), ~ lab_debrief_names$NewColName)
@@ -70,7 +70,7 @@ lab_debrief_raw <- lab_debrief_raw %>%
   mutate(lab = tolower(lab)) %>%
   filter(!is.na(lab))
 
-secondary_data_raw <- secondary_data_raw %>%
+lab_secondary_raw <- lab_secondary_raw %>%
   mutate(lab = str_replace_all(LabID, '[^[:alnum:]]',''))%>%
   mutate(lab = tolower(lab)) %>%
   filter(!is.na(lab))
@@ -85,16 +85,23 @@ lab_debrief_raw$lab[lab_debrief_raw$lab == "unlvbcrl"] <- "bcrlunlv"
 lab_debrief_raw$lab[lab_debrief_raw$lab == "utkinfantlanguagelab"] <- "infantlanglabutk"
 lab_debrief_raw$lab[lab_debrief_raw$lab == "utrechtbabylab"] <- "babylabutrecht"
 lab_debrief_raw$lab[lab_debrief_raw$lab ==  "lllliverpoollanguagelab"] <- "lllliv"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "cfnuon"] <- "cfnuofn"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
 
-secondary_data_raw$lab[secondary_data_raw$lab == "mindevlabbicocca"] <- "minddevlabbicocca"
-secondary_data_raw$lab[secondary_data_raw$lab == "umbbabylab"] <- "babylabumassb"
-secondary_data_raw$lab[secondary_data_raw$lab ==  "plymouthbabylab"] <- "babylabplymouth"
-secondary_data_raw$lab[secondary_data_raw$lab == "utrechtbabylab"] <- "babylabutrecht"
-secondary_data_raw$lab[secondary_data_raw$lab ==  "lancslab"] <- "lancaster" 
-secondary_data_raw$lab[secondary_data_raw$lab == "babylinguio" ] <- "babyling-oslo"
-secondary_data_raw$lab[secondary_data_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
-secondary_data_raw$lab[secondary_data_raw$lab == "utkinfantlanglab" ] <- "infantlanglabutk"
-secondary_data_raw$lab[secondary_data_raw$lab == "bciccl"] <- "icclbc"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "mindevlabbicocca"] <- "minddevlabbicocca"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "umbbabylab"] <- "babylabumassb"
+lab_secondary_raw$lab[lab_secondary_raw$lab ==  "plymouthbabylab"] <- "babylabplymouth"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "utrechtbabylab"] <- "babylabutrecht"
+lab_secondary_raw$lab[lab_secondary_raw$lab ==  "lancslab"] <- "lancaster" 
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babylinguio" ] <- "babyling-oslo"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "utkinfantlanglab" ] <- "infantlanglabutk"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "bciccl"] <- "icclbc"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "cfnuon"] <- "cfnuofn"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babyling-oslo"] <- "babylingoslo"
 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "lcd"] <- "lcdfsu"
@@ -122,7 +129,13 @@ lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "nusbabylab"] <- "nusinfa
 ####
 #########
 
-####----->
+
+#Are there uncaptured lines (ie IDs not in the labid list, still)?
+extra_questionnaire <- setdiff(lab_questionnaire_raw$lab, final_labids$V1)
+extra_secondary <- setdiff(lab_secondary_raw$lab, final_labids$V1)
+extra_debrief <- setdiff(lab_debrief_raw$lab, final_labids$V1)
+
+####RESOLVED (10/24)
 #Issue #8 Labs still un-matched in questionnaire - did they participate in MB1 or drop out after initial questionnaire?
 setdiff(lab_questionnaire_raw$lab, final_labids$V1)
 
@@ -133,13 +146,12 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
   filter(!(lab %in% c("mqcll", "elpgeorgetown", "ellskidmore")))
 
 
-
 ####-----> Issue #9 - (final dataset) labs that didn't fill out one of the surveys. Is this okay?
-no_secondary <- setdiff(final_labids$V1, secondary_data_raw$lab)
+no_secondary <- setdiff(final_labids$V1, lab_secondary_raw$lab)
 no_debrief <- setdiff(final_labids$V1, lab_debrief_raw$lab)
   
 # These labs DID fill out the debrief, but didn't participate in secondary analysis - OKAY!
-setdiff(no_secondary, no_debrief) 
+#setdiff(no_secondary, no_debrief) 
 
 # These labs DID fill out the secondary, but DIDN'T fill out the debrief. Is this okay? 
 setdiff(no_debrief, no_secondary) 
@@ -147,7 +159,7 @@ setdiff(no_debrief, no_secondary)
 # These labs filled out neither final worksheet
 intersect(no_debrief, no_secondary)
 
-
+  
 #########
 ####
 # CONSOLIDATE RESPONSES: Some labs have more than one entry in a spreadsheet! 
