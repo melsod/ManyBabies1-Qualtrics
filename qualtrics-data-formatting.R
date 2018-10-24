@@ -7,9 +7,9 @@ library(tidyverse)
 ####
 #########
 # Read qualtrics data
-secondary_header <- read_csv("qualtricsraw/Secondary-data-analysis-numeric.csv", col_names = TRUE, n_max = 2)
-secondary_data_raw <- read_csv("qualtricsraw/Secondary-data-analysis-numeric.csv", col_names = FALSE, skip = 3)
-names(secondary_data_raw) <- names(secondary_header)
+lab_secondary_header <- read_csv("qualtricsraw/Lab-secondary-data-analysis-numeric.csv", col_names = TRUE, n_max = 2)
+lab_secondary_raw <- read_csv("qualtricsraw/Lab-secondary-data-analysis-numeric.csv", col_names = FALSE, skip = 3)
+names(lab_secondary_raw) <- names(lab_secondary_header)
 
 lab_debrief_header <- read_csv("qualtricsraw/Lab-debrief-numeric.csv", col_names = TRUE, n_max = 2)
 lab_debrief_raw <- read_csv("qualtricsraw/Lab-debrief-numeric.csv", col_names = FALSE, skip = 3)
@@ -20,11 +20,11 @@ lab_questionnaire_raw <- read_csv("qualtricsraw/Lab-Questionnaire.csv", col_name
 names(lab_questionnaire_raw) <- names(lab_questionnaire_header)
 
 #Get dictionaries so we can add meaningful column names
-secondary_header <- secondary_header %>%
+lab_secondary_header <- lab_secondary_header %>%
   rownames_to_column %>% 
   gather(var, value, -rowname) %>% 
   spread(rowname, value)
-write_csv(secondary_header, 'metadata/secondary_dict_raw.csv')
+write_csv(lab_secondary_header, 'metadata/lab_secondary_dict_raw.csv')
 
 lab_debrief_header <- lab_debrief_header %>%
   rownames_to_column %>% 
@@ -40,7 +40,7 @@ write_csv(lab_questionnaire_header, 'metadata/lab_questionnaire_dict_raw.csv')
 
 #Read in dicts with better column names and add them
 
-secondary_names <- read_csv('metadata/secondary_dict_literate.csv')
+lab_secondary_names <- read_csv('metadata/lab_secondary_dict_literate.csv')
 lab_debrief_names <- read_csv('metadata/lab_debrief_dict_literate.csv')
 lab_questionnaire_names <- read_csv('metadata/lab_questionnaire_dict_literate.csv')
 
@@ -113,7 +113,8 @@ lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "baldwinlaboregon"] <- "b
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "lancslab" ] <- "lancaster" 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylablancaster"] <- "lancaster" 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylablscp"] <- "lscppsl"
-
+lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
+lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
 
 #########
 ####
@@ -125,16 +126,11 @@ lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylablscp"] <- "lscpps
 #Issue #8 Labs still un-matched in questionnaire - did they participate in MB1 or drop out after initial questionnaire?
 setdiff(lab_questionnaire_raw$lab, final_labids$V1)
 
-# AS A TEMPORARY MEASURE, Drop these non-matching IDs from the sheet:
-lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  filter(!(lab %in% c("ellskidmore", "nusbabylab","infantlabsingapore")))
-
 # Resolution
-
-#mqcll formally withdrew (staffing/database limitations prevented recruitment)
-#elpgeorgetown only doing gaze following
+#mqcll & ell-skidmore formally withdrew (staffing/database limitations prevented recruitment)
+#elpgeorgetown only did gaze following, no main IDS
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  filter(!(lab %in% c("mqcll", "elpgeorgetown")))
+  filter(!(lab %in% c("mqcll", "elpgeorgetown", "ellskidmore")))
 
 
 
