@@ -7,9 +7,9 @@ library(tidyverse)
 ####
 #########
 # Read qualtrics data
-secondary_header <- read_csv("qualtricsraw/Secondary-data-analysis-numeric.csv", col_names = TRUE, n_max = 2)
-secondary_data_raw <- read_csv("qualtricsraw/Secondary-data-analysis-numeric.csv", col_names = FALSE, skip = 3)
-names(secondary_data_raw) <- names(secondary_header)
+lab_secondary_header <- read_csv("qualtricsraw/Lab-secondary-data-analysis-numeric.csv", col_names = TRUE, n_max = 2)
+lab_secondary_raw <- read_csv("qualtricsraw/Lab-secondary-data-analysis-numeric.csv", col_names = FALSE, skip = 3)
+names(lab_secondary_raw) <- names(lab_secondary_header)
 
 lab_debrief_header <- read_csv("qualtricsraw/Lab-debrief-numeric.csv", col_names = TRUE, n_max = 2)
 lab_debrief_raw <- read_csv("qualtricsraw/Lab-debrief-numeric.csv", col_names = FALSE, skip = 3)
@@ -20,11 +20,11 @@ lab_questionnaire_raw <- read_csv("qualtricsraw/Lab-Questionnaire.csv", col_name
 names(lab_questionnaire_raw) <- names(lab_questionnaire_header)
 
 #Get dictionaries so we can add meaningful column names
-secondary_header <- secondary_header %>%
+lab_secondary_header <- lab_secondary_header %>%
   rownames_to_column %>% 
   gather(var, value, -rowname) %>% 
   spread(rowname, value)
-write_csv(secondary_header, 'metadata/secondary_dict_raw.csv')
+write_csv(lab_secondary_header, 'metadata/lab_secondary_dict_raw.csv')
 
 lab_debrief_header <- lab_debrief_header %>%
   rownames_to_column %>% 
@@ -40,12 +40,12 @@ write_csv(lab_questionnaire_header, 'metadata/lab_questionnaire_dict_raw.csv')
 
 #Read in dicts with better column names and add them
 
-secondary_names <- read_csv('metadata/secondary_dict_literate.csv')
+lab_secondary_names <- read_csv('metadata/lab_secondary_dict_literate.csv')
 lab_debrief_names <- read_csv('metadata/lab_debrief_dict_literate.csv')
 lab_questionnaire_names <- read_csv('metadata/lab_questionnaire_dict_literate.csv')
 
-secondary_data_raw <- secondary_data_raw %>%
-  rename_at(vars(secondary_names$var), ~ secondary_names$NewColName)
+lab_secondary_raw <- lab_secondary_raw %>%
+  rename_at(vars(lab_secondary_names$var), ~ lab_secondary_names$NewColName)
 
 lab_debrief_raw <- lab_debrief_raw %>%
   rename_at(vars(lab_debrief_names$var), ~ lab_debrief_names$NewColName)
@@ -70,7 +70,7 @@ lab_debrief_raw <- lab_debrief_raw %>%
   mutate(lab = tolower(lab)) %>%
   filter(!is.na(lab))
 
-secondary_data_raw <- secondary_data_raw %>%
+lab_secondary_raw <- lab_secondary_raw %>%
   mutate(lab = str_replace_all(LabID, '[^[:alnum:]]',''))%>%
   mutate(lab = tolower(lab)) %>%
   filter(!is.na(lab))
@@ -85,16 +85,23 @@ lab_debrief_raw$lab[lab_debrief_raw$lab == "unlvbcrl"] <- "bcrlunlv"
 lab_debrief_raw$lab[lab_debrief_raw$lab == "utkinfantlanguagelab"] <- "infantlanglabutk"
 lab_debrief_raw$lab[lab_debrief_raw$lab == "utrechtbabylab"] <- "babylabutrecht"
 lab_debrief_raw$lab[lab_debrief_raw$lab ==  "lllliverpoollanguagelab"] <- "lllliv"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "cfnuon"] <- "cfnuofn"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
 
-secondary_data_raw$lab[secondary_data_raw$lab == "mindevlabbicocca"] <- "minddevlabbicocca"
-secondary_data_raw$lab[secondary_data_raw$lab == "umbbabylab"] <- "babylabumassb"
-secondary_data_raw$lab[secondary_data_raw$lab ==  "plymouthbabylab"] <- "babylabplymouth"
-secondary_data_raw$lab[secondary_data_raw$lab == "utrechtbabylab"] <- "babylabutrecht"
-secondary_data_raw$lab[secondary_data_raw$lab ==  "lancslab"] <- "lancaster" 
-secondary_data_raw$lab[secondary_data_raw$lab == "babylinguio" ] <- "babyling-oslo"
-secondary_data_raw$lab[secondary_data_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
-secondary_data_raw$lab[secondary_data_raw$lab == "utkinfantlanglab" ] <- "infantlanglabutk"
-secondary_data_raw$lab[secondary_data_raw$lab == "bciccl"] <- "icclbc"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "mindevlabbicocca"] <- "minddevlabbicocca"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "umbbabylab"] <- "babylabumassb"
+lab_secondary_raw$lab[lab_secondary_raw$lab ==  "plymouthbabylab"] <- "babylabplymouth"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "utrechtbabylab"] <- "babylabutrecht"
+lab_secondary_raw$lab[lab_secondary_raw$lab ==  "lancslab"] <- "lancaster" 
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babylinguio" ] <- "babyling-oslo"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "utkinfantlanglab" ] <- "infantlanglabutk"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "bciccl"] <- "icclbc"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "cfnuon"] <- "cfnuofn"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babyling-oslo"] <- "babylingoslo"
 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "lcd"] <- "lcdfsu"
@@ -113,7 +120,8 @@ lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "baldwinlaboregon"] <- "b
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "lancslab" ] <- "lancaster" 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylablancaster"] <- "lancaster" 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylablscp"] <- "lscppsl"
-
+lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
+lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
 
 #########
 ####
@@ -121,29 +129,29 @@ lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylablscp"] <- "lscpps
 ####
 #########
 
-####----->
+
+#Are there uncaptured lines (ie IDs not in the labid list, still)?
+extra_questionnaire <- setdiff(lab_questionnaire_raw$lab, final_labids$V1)
+extra_secondary <- setdiff(lab_secondary_raw$lab, final_labids$V1)
+extra_debrief <- setdiff(lab_debrief_raw$lab, final_labids$V1)
+
+####RESOLVED (10/24)
 #Issue #8 Labs still un-matched in questionnaire - did they participate in MB1 or drop out after initial questionnaire?
 setdiff(lab_questionnaire_raw$lab, final_labids$V1)
 
-# AS A TEMPORARY MEASURE, Drop these non-matching IDs from the sheet:
-lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  filter(!(lab %in% c("ellskidmore", "nusbabylab","infantlabsingapore")))
-
 # Resolution
-
-#mqcll formally withdrew (staffing/database limitations prevented recruitment)
-#elpgeorgetown only doing gaze following
+#mqcll & ell-skidmore formally withdrew (staffing/database limitations prevented recruitment)
+#elpgeorgetown only did gaze following, no main IDS
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  filter(!(lab %in% c("mqcll", "elpgeorgetown")))
-
+  filter(!(lab %in% c("mqcll", "elpgeorgetown", "ellskidmore")))
 
 
 ####-----> Issue #9 - (final dataset) labs that didn't fill out one of the surveys. Is this okay?
-no_secondary <- setdiff(final_labids$V1, secondary_data_raw$lab)
+no_secondary <- setdiff(final_labids$V1, lab_secondary_raw$lab)
 no_debrief <- setdiff(final_labids$V1, lab_debrief_raw$lab)
   
 # These labs DID fill out the debrief, but didn't participate in secondary analysis - OKAY!
-setdiff(no_secondary, no_debrief) 
+#setdiff(no_secondary, no_debrief) 
 
 # These labs DID fill out the secondary, but DIDN'T fill out the debrief. Is this okay? 
 setdiff(no_debrief, no_secondary) 
@@ -151,7 +159,7 @@ setdiff(no_debrief, no_secondary)
 # These labs filled out neither final worksheet
 intersect(no_debrief, no_secondary)
 
-
+  
 #########
 ####
 # CONSOLIDATE RESPONSES: Some labs have more than one entry in a spreadsheet! 
@@ -161,7 +169,9 @@ intersect(no_debrief, no_secondary)
 #########
 
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  arrange(lab)
+  arrange(lab) %>%
+  select(lab, everything())
+  
 
 q_duplicates <- lab_questionnaire_raw %>%
   group_by(lab)%>%
@@ -169,7 +179,7 @@ q_duplicates <- lab_questionnaire_raw %>%
   filter(n > 1)
 
 View(filter(lab_questionnaire_raw, lab %in% q_duplicates$lab))
-foo  = filter(lab_questionnaire_raw, lab == 'babylabutrecht')
+View(filter(lab_questionnaire_raw, lab == 'baldwinlabuoregon'))
 
 # 1 babylableiden           2
 # Most info is in second fill-out only, completed 21-03-18. Earlier version (08-02-2018) states collection to an 
@@ -217,12 +227,35 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
   mutate(dBA == ifelse(lab == 'babylabutrecht',"The maximum reached power during playback of the reference audio was 75.0±0 dB(A) SPL, 35.6±1.6 without (n=3, 10 sec.).",dBA))
 
 # 6 babylabyork             2
-# Second form primarily just adding more information, BUT the subject planned contribution bins also change. 
-#TODO: Explore more!
+# Second form adds a bit more info, but retain fuller answers on a few columns in old version
 #older version: 2017-05-05 08:39:16
-#PlannedStart: We saw the first participant on May 4. (Amended to 'no')
+#newer version: 2017-05-16 12:21:47
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'babylabyork' & StartDate == '2017-05-05 08:39:16'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'babylabyork' & StartDate == '2017-05-05 08:39:16')) %>%
+  mutate(PlannedStart = ifelse(lab == 'babylabyork',old$PlannedStart[1],PlannedStart))%>%
+  mutate(CoAuthors = ifelse(lab == 'babylabyork',old$CoAuthors[1],CoAuthors))
+
 
 # 7 baldwinlabuoregon       3
+#Keep most recent, add more informative answers from middle one
+#older versions
+middle <- lab_questionnaire_raw %>%
+  filter((lab == 'baldwinlabuoregon' & StartDate == '2018-01-15 18:39:07'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'baldwinlabuoregon' & StartDate == '2018-01-15 18:39:07')) %>%
+  filter(!(lab == 'baldwinlabuoregon' & StartDate == '2017-11-28 18:49:31')) %>%
+  mutate(Recruitment = ifelse(lab == 'babylabyork',middle$Recruitment[1],Recruitment))%>%
+  mutate(Screening = ifelse(lab == 'babylabyork',middle$Screening[1],Screening))%>%
+  mutate(Compensation_toysBooks = ifelse(lab == 'babylabyork',middle$Compensation_toysBooks[1],Compensation_toysBooks))%>%
+  mutate(Compensation_cash = ifelse(lab == 'babylabyork',middle$Compensation_cash[1],Compensation_cash))
+  
+
+
+
 # 8 cfnuofn                 2
 # 9 chosunbaby              2
 # 10 escompicbsleipzig       2

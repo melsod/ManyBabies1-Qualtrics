@@ -14,7 +14,7 @@ All data cleaning done here
 
 *Lab-Questionnaire.csv* This is the raw, unedited Qualtrics output of the main “ManyBabies Laboratory Questionnaire” (i.e. the formal sign-up questionnaire for ManyBabies1). Should be final version (as of July 1, 2018).
 
-*Lab-debrief-numeric.csv* This is the raw, unedited Qualtrics output of the “ManyBabies1 Lab Debriefing Questionnaire”, in numeric form, currently updated through August 1, 2018.
+*Lab-debrief-numeric.csv* This is the raw, unedited Qualtrics output of the “ManyBabies1 Lab Debriefing Questionnaire”, in numeric form, currently updated through September 28, 2018.
 
 *MB1Debriefing_May2-2018.pdf* Text of the questions for the “ManyBabies1 Lab Debriefing Questionnaire”, up through May 2, 2018 (when we started discussing having a separate secondary data analysis quiz). Includes two questions about the lab's experience running MB1 style studies that are missing in the later version (moved to the debrief questionnaire).
 
@@ -27,7 +27,7 @@ All data cleaning done here
 *MB1Questionnaire.pdf* Text of the main “ManyBabies Laboratory Questionnaire”.
 *MB1SecondaryExit.pdf* Text of the “Secondary data analysis exit quiz”.
 
-*Lab-secondary-data-analysis-numeric.csv* This is the raw, unedited Qualtrics output of the “Secondary data analysis exit quiz”in numeric form, currently updated through August 1, 2018.
+*Lab-secondary-data-analysis-numeric.csv* This is the raw, unedited Qualtrics output of the “Secondary data analysis exit quiz”in numeric form, currently updated through September 28, 2018.
 
 ## qualtricsraw/old_data_versions
 
