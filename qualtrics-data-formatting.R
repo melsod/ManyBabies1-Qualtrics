@@ -225,7 +225,7 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
 
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
   filter(!(lab == 'babylabutrecht' & StartDate == '2018-01-09 04:06:57')) %>%
-  mutate(dBA == ifelse(lab == 'babylabutrecht',"The maximum reached power during playback of the reference audio was 75.0±0 dB(A) SPL, 35.6±1.6 without (n=3, 10 sec.).",dBA))
+  mutate(dBA = ifelse(lab == 'babylabutrecht',"The maximum reached power during playback of the reference audio was 75.0±0 dB(A) SPL, 35.6±1.6 without (n=3, 10 sec.).",dBA))
 
 # 6 babylabyork             2
 # Second form adds a bit more info, but retain fuller answers on a few columns in old version
@@ -434,21 +434,42 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
 # ASSUMPTION: At this point, all three questionnaires contain exactly 1 row at most from each lab, and
 # every lab that has a row is a 'legal' labname.  Let's try to merge them!!!!
 
+#Drop 'nuisance' qualtrics columns
+col_to_drop <- c('IPAddress', 'Progress', 'Status', 'Duration_seconds', 'RecordedDate',
+                 'RecipientFirstName', 'RecipientLastName', 'RecipientEmail', 'ExternalReference', 'LocationLatitude', 
+                 'LocationLongitude', 'DistributionChannel', 'UserLanguage')
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  select(-c(col_to_drop))
+
+lab_debrief_raw <- lab_debrief_raw %>%
+  select(-c(col_to_drop))
+
+lab_secondary_raw <- lab_secondary_raw %>%
+  select(-c(col_to_drop))
+
+
 lab_mega_qualtrics <- merge(lab_questionnaire_raw, lab_debrief_raw, 
                             by = 'lab', all.quest = TRUE, all.debrief = TRUE, 
                             suffixes = c(".quest", ".debrief"))
 
 lab_mega_qualtrics <- merge(lab_mega_qualtrics, lab_secondary_raw, 
-                            by = 'lab', all = TRUE, all.second = TRUE, 
-                            suffixes = c("", ".second"))
+                            by = 'lab', all.qd = TRUE, all.2ary = TRUE, 
+                            suffixes = c(".qd", ".2ary"))
 
 #Holy moly it works! Before exporting to the main repository, we need to:
 #1 - Probably drop columns that are qualtrics cruft that nobody needs
 #2 - Determine which (if any) responses should not be associated with their lab's name when
 #merged
 
-col_to_drop <- c()
+col_to_drop<- c('OverallExperience', 'ChangePractices_YN', 'ChangePracticesSelect', 'ChangePractices_explain', 
+'CommunicationClear', 'ContactPreferences','ContactPreferences_other','SetupProblems', 'SetupProblems_comment',
+'AskHelp','ResponseSatisfying','Suggestions','Suggestions_comment', 'CompleterEmail', 'ImproveCommunication','OtherFeedback')
 
 lab_mega_qualtrics <- lab_mega_qualtrics %>%
   select(-c(col_to_drop))
+
+#....And print out for export to the main repository!!!
+write_tsv(lab_mega_qualtrics, 'lab_qualtrics_merged_data.tsv')
+
 
