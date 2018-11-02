@@ -434,4 +434,21 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
 # ASSUMPTION: At this point, all three questionnaires contain exactly 1 row at most from each lab, and
 # every lab that has a row is a 'legal' labname.  Let's try to merge them!!!!
 
+lab_mega_qualtrics <- merge(lab_questionnaire_raw, lab_debrief_raw, 
+                            by = 'lab', all.quest = TRUE, all.debrief = TRUE, 
+                            suffixes = c(".quest", ".debrief"))
+
+lab_mega_qualtrics <- merge(lab_mega_qualtrics, lab_secondary_raw, 
+                            by = 'lab', all = TRUE, all.second = TRUE, 
+                            suffixes = c("", ".second"))
+
+#Holy moly it works! Before exporting to the main repository, we need to:
+#1 - Probably drop columns that are qualtrics cruft that nobody needs
+#2 - Determine which (if any) responses should not be associated with their lab's name when
+#merged
+
+col_to_drop <- c()
+
+lab_mega_qualtrics <- lab_mega_qualtrics %>%
+  select(-c(col_to_drop))
 
