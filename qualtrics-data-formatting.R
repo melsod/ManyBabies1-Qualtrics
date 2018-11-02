@@ -1,5 +1,6 @@
 #install.packages("tidyverse")
 library(tidyverse)
+library(testthat)
 
 #########
 ####
@@ -298,13 +299,12 @@ s_duplicates <- lab_secondary_raw %>%
   filter(n > 1)
 
 View(filter(lab_secondary_raw, lab %in% s_duplicates$lab))
-View(filter(lab_secondary_raw, lab == 'babylingoslo'))
+View(filter(lab_secondary_raw, lab == 'pocdnorthwestern'))
 
 #1 babylablangessex       2
 #just drop an NA row
 lab_secondary_raw <- lab_secondary_raw %>%
   filter(!(lab == 'babylablangessex' & StartDate == '2018-06-29 08:31:07'))
-
 
 #2 babylabnijmegen        2
 #mostlyempty: 2018-06-29 16:11:08, except keep newer FamilyExperience value
@@ -315,8 +315,6 @@ mostlyempty <- lab_secondary_raw %>%
 lab_secondary_raw <- lab_secondary_raw %>%
   filter(!(lab == 'babylabnijmegen' & StartDate == '2018-06-29 16:11:08')) %>%
   mutate(FamilyExperience = ifelse(lab == 'babylabnijmegen',mostlyempty$FamilyExperience[1],FamilyExperience))
-  
-
 
 #3 babylabplymouth        2
 # remove empty: 2018-06-29 08:11:01
@@ -333,8 +331,6 @@ lab_secondary_raw <- lab_secondary_raw %>%
   mutate(FamilyExperience = ifelse(lab == 'babylabpotsdam',fe$FamilyExperience[1],FamilyExperience)) %>%
   mutate(FamilyExperience_explain = ifelse(lab == 'babylabpotsdam',fe$FamilyExperience_explain[1],FamilyExperience_explain))
 
-
-
 #5 babylabumassb          2
 #updated familyExperience & explain @ 2018-06-29 10:08:33
 fe <- lab_secondary_raw %>%
@@ -345,19 +341,97 @@ lab_secondary_raw <- lab_secondary_raw %>%
   mutate(FamilyExperience = ifelse(lab == 'babylabumassb',fe$FamilyExperience[1],FamilyExperience)) %>%
   mutate(FamilyExperience_explain = ifelse(lab == 'babylabumassb',fe$FamilyExperience_explain[1],FamilyExperience_explain))
 
-
 #6 babylabutrecht         2
 #Drop NA at 2018-06-29 03:02:26
 lab_secondary_raw <- lab_secondary_raw %>%
   filter(!(lab == 'babylabutrecht' & StartDate == '2018-06-29 03:02:26'))
 
 #7 babylingoslo           2
+# Drop NA line 2018-06-29 08:17:46
+
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylingoslo' & StartDate == '2018-06-29 08:17:46'))
 
 #8 cdcceu                 2
+#Updated FE and FE_explain at 2018-06-29 10:51:35
+fe <- lab_secondary_raw %>%
+  filter((lab == 'cdcceu' & StartDate == '2018-06-29 10:51:35'))
+
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'cdcceu' & StartDate == '2018-06-29 10:51:35')) %>%
+  mutate(FamilyExperience = ifelse(lab == 'cdcceu',fe$FamilyExperience[1],FamilyExperience)) %>%
+  mutate(FamilyExperience_explain = ifelse(lab == 'cdcceu',fe$FamilyExperience_explain[1],FamilyExperience_explain))
+
 #9 childlabmanchester     2
+#Drop NA at 2018-06-30 00:58:06
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'childlabmanchester' & StartDate == '2018-06-30 00:58:06'))
+
 #10 chosunbaby             2
+#Drop NA at 2018-06-29 08:27:30
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'chosunbaby' & StartDate == '2018-06-29 08:27:30'))
+
 #11 cogdevlabbyu           2
+#Drop NA at 2018-06-29 08:32:55
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'cogdevlabbyu' & StartDate == '2018-06-29 08:32:55'))
+
 #12 irlconcordia           2
+#Drop NA at 2018-06-29 10:32:11
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'irlconcordia' & StartDate == '2018-06-29 10:32:11'))
+
 #13 jmucdl                 2
+#Drop NA at 2018-06-29 08:45:54
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'jmucdl' & StartDate == '2018-06-29 08:45:54'))
+
 #14 lancaster              2
+#Drop NA at 2018-06-29 08:14:55
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'lancaster' & StartDate == '2018-06-29 08:14:55'))
+
 #15 pocdnorthwestern       2
+#Drop NA at 2018-06-29 10:21:27
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'pocdnorthwestern' & StartDate == '2018-06-29 10:21:27'))
+
+
+######
+# Double check that duplicates are gone now!
+######
+
+q_duplicates <- lab_questionnaire_raw %>%
+  group_by(lab)%>%
+  summarize(n=n())%>%
+  filter(n > 1)
+
+d_duplicates <- lab_debrief_raw %>%
+  group_by(lab)%>%
+  summarize(n=n())%>%
+  filter(n > 1)
+
+s_duplicates <- lab_secondary_raw %>%
+  group_by(lab)%>%
+  summarize(n=n())%>%
+  filter(n > 1)
+
+test_that("no duplicates remain", {
+  expect_equal(nrow(q_duplicates),0)
+  expect_equal(nrow(d_duplicates),0)
+  expect_equal(nrow(s_duplicates),0)
+})
+
+####
+#TEMPORARYTEMPORARYTEMPORARY
+#Keep just one row from the dupes that remain, so we can write the rest of the merge code!!!
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  distinct(lab, .keep_all = TRUE)
+
+
+######
+# ASSUMPTION: At this point, all three questionnaires contain exactly 1 row at most from each lab, and
+# every lab that has a row is a 'legal' labname.  Let's try to merge them!!!!
+
+
