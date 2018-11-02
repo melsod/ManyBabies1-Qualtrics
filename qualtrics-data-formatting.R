@@ -248,10 +248,10 @@ middle <- lab_questionnaire_raw %>%
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
   filter(!(lab == 'baldwinlabuoregon' & StartDate == '2018-01-15 18:39:07')) %>%
   filter(!(lab == 'baldwinlabuoregon' & StartDate == '2017-11-28 18:49:31')) %>%
-  mutate(Recruitment = ifelse(lab == 'babylabyork',middle$Recruitment[1],Recruitment))%>%
-  mutate(Screening = ifelse(lab == 'babylabyork',middle$Screening[1],Screening))%>%
-  mutate(Compensation_toysBooks = ifelse(lab == 'babylabyork',middle$Compensation_toysBooks[1],Compensation_toysBooks))%>%
-  mutate(Compensation_cash = ifelse(lab == 'babylabyork',middle$Compensation_cash[1],Compensation_cash))
+  mutate(Recruitment = ifelse(lab == 'baldwinlabuoregon',middle$Recruitment[1],Recruitment))%>%
+  mutate(Screening = ifelse(lab == 'baldwinlabuoregon',middle$Screening[1],Screening))%>%
+  mutate(Compensation_toysBooks = ifelse(lab == 'baldwinlabuoregon',middle$Compensation_toysBooks[1],Compensation_toysBooks))%>%
+  mutate(Compensation_cash = ifelse(lab == 'baldwinlabuoregon',middle$Compensation_cash[1],Compensation_cash))
   
 
 
@@ -268,3 +268,96 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
 # 17 trainorlab              4
 # 18 unlvmusiclab            2
 # 19 weescienceedinburgh     2
+
+#######
+# The same, for lab_debrief
+lab_debrief_raw <- lab_debrief_raw %>%
+  arrange(lab) %>%
+  select(lab, everything())
+
+
+d_duplicates <- lab_debrief_raw %>%
+  group_by(lab)%>%
+  summarize(n=n())%>%
+  filter(n > 1)
+
+View(filter(lab_debrief_raw, lab %in% d_duplicates$lab))
+
+#Nobody filled out debrief more than once, hooray!
+
+#######
+# The same, for lab_secondary
+lab_secondary_raw <- lab_secondary_raw %>%
+  arrange(lab) %>%
+  select(lab, everything())
+
+
+s_duplicates <- lab_secondary_raw %>%
+  group_by(lab)%>%
+  summarize(n=n())%>%
+  filter(n > 1)
+
+View(filter(lab_secondary_raw, lab %in% s_duplicates$lab))
+View(filter(lab_secondary_raw, lab == 'babylingoslo'))
+
+#1 babylablangessex       2
+#just drop an NA row
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylablangessex' & StartDate == '2018-06-29 08:31:07'))
+
+
+#2 babylabnijmegen        2
+#mostlyempty: 2018-06-29 16:11:08, except keep newer FamilyExperience value
+#to keep: 2018-06-29 02:08:15
+mostlyempty <- lab_secondary_raw %>%
+  filter((lab == 'babylabnijmegen' & StartDate == '2018-06-29 16:11:08'))
+
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylabnijmegen' & StartDate == '2018-06-29 16:11:08')) %>%
+  mutate(FamilyExperience = ifelse(lab == 'babylabnijmegen',mostlyempty$FamilyExperience[1],FamilyExperience))
+  
+
+
+#3 babylabplymouth        2
+# remove empty: 2018-06-29 08:11:01
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylabplymouth' & StartDate == '2018-06-29 08:11:01'))
+
+#4 babylabpotsdam         2
+#updated familyExperience & explain @ 2018-06-29 08:09:11
+fe <- lab_secondary_raw %>%
+  filter((lab == 'babylabpotsdam' & StartDate == '2018-06-29 08:09:11'))
+
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylabpotsdam' & StartDate == '2018-06-29 08:09:11')) %>%
+  mutate(FamilyExperience = ifelse(lab == 'babylabpotsdam',fe$FamilyExperience[1],FamilyExperience)) %>%
+  mutate(FamilyExperience_explain = ifelse(lab == 'babylabpotsdam',fe$FamilyExperience_explain[1],FamilyExperience_explain))
+
+
+
+#5 babylabumassb          2
+#updated familyExperience & explain @ 2018-06-29 10:08:33
+fe <- lab_secondary_raw %>%
+  filter((lab == 'babylabumassb' & StartDate == '2018-06-29 10:08:33'))
+
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylabumassb' & StartDate == '2018-06-29 10:08:33')) %>%
+  mutate(FamilyExperience = ifelse(lab == 'babylabumassb',fe$FamilyExperience[1],FamilyExperience)) %>%
+  mutate(FamilyExperience_explain = ifelse(lab == 'babylabumassb',fe$FamilyExperience_explain[1],FamilyExperience_explain))
+
+
+#6 babylabutrecht         2
+#Drop NA at 2018-06-29 03:02:26
+lab_secondary_raw <- lab_secondary_raw %>%
+  filter(!(lab == 'babylabutrecht' & StartDate == '2018-06-29 03:02:26'))
+
+#7 babylingoslo           2
+
+#8 cdcceu                 2
+#9 childlabmanchester     2
+#10 chosunbaby             2
+#11 cogdevlabbyu           2
+#12 irlconcordia           2
+#13 jmucdl                 2
+#14 lancaster              2
+#15 pocdnorthwestern       2
