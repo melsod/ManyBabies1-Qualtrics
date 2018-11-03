@@ -182,6 +182,10 @@ q_duplicates <- lab_questionnaire_raw %>%
 View(filter(lab_questionnaire_raw, lab %in% q_duplicates$lab))
 View(filter(lab_questionnaire_raw, lab == 'baldwinlabuoregon'))
 
+# StartDate is not being recognized in filter commands because its class is POSIXct (date format). 
+# Here I'm changing it to a character so it will be recognized.
+lab_questionnaire_raw$StartDate <- as.character(lab_questionnaire_raw$StartDate) 
+
 # 1 babylableiden           2
 # Most info is in second fill-out only, completed 21-03-18. Earlier version (08-02-2018) states collection to an 
 #N, starting 25-01-18, updated version states collection to last day (04-30-2018). No PCF entry. 
@@ -189,8 +193,8 @@ View(filter(lab_questionnaire_raw, lab == 'baldwinlabuoregon'))
 #TODO: Contact about protocol change?
 
 lab_questionnaire_raw <- lab_questionnaire_raw %>%
-  mutate(PlannedStart = ifelse(lab == 'babylableiden', 'January 25, 2018', PlannedStart))%>%
-  filter(!(lab == 'babylableiden' & StartDate == '2018-02-01 04:48:42'))
+  mutate(PlannedStart = ifelse(lab == 'babylableiden', 'January 25, 2018', PlannedStart)) %>%
+  filter(!(lab == 'babylableiden' & StartDate == "2018-02-01 04:48:42"))
 
 # 2 babylablmu              2
 # Minor updates to text answers
@@ -254,21 +258,113 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
   mutate(Compensation_toysBooks = ifelse(lab == 'baldwinlabuoregon',middle$Compensation_toysBooks[1],Compensation_toysBooks))%>%
   mutate(Compensation_cash = ifelse(lab == 'baldwinlabuoregon',middle$Compensation_cash[1],Compensation_cash))
   
-
-
-
 # 8 cfnuofn                 2
+#Keep most recent, add more informative answers from older one
+#older versions
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'cfnuofn' & StartDate == '2017-05-11 22:26:20'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'cfnuofn' & StartDate == '2017-05-11 22:26:20')) %>%
+  mutate(Compensation_parkingBus = ifelse(lab == 'cfnuofn',old$Compensation_parkingBus[1],Compensation_parkingBus))%>%
+  mutate(CaregiverHeadphones = ifelse(lab == 'cfnuofn',old$CaregiverHeadphones[1],CaregiverHeadphones))%>%
+  mutate(InfantHeld = ifelse(lab == 'cfnuofn',old$InfantHeld[1],InfantHeld))
+
 # 9 chosunbaby              2
+
+#Keep most recent, add more informative answers from older one
+#older versions
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'chosunbaby' & StartDate == '2017-09-27 03:48:09'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'chosunbaby' & StartDate == '2017-09-27 03:48:09')) %>%
+  mutate(PlannedEnd = ifelse(lab == 'chosunbaby',old$PlannedEnd[1],PlannedEnd))
+
 # 10 escompicbsleipzig       2
+
+#Keep most recent, add more informative answers from older one
+#older version has more specific end date, so keeping that
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'escompicbsleipzig' & StartDate == '2017-10-20 03:23:47'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'escompicbsleipzig' & StartDate == '2017-10-20 03:23:47')) %>%
+  mutate(PlannedEnd = ifelse(lab == 'escompicbsleipzig',old$PlannedEnd[1],PlannedEnd))
+
 # 11 infantstudiesubc        2
+View(filter(lab_questionnaire_raw, lab == 'infantstudiesubc'))
+
+#Keep most recent, add more informative answers from older one
+#older version has more specific end date, so keeping that
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'infantstudiesubc' & StartDate == '2017-05-05 12:41:48'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'infantstudiesubc' & StartDate == '2017-05-05 12:41:48')) %>%
+  mutate(RA_achievement_coursework = ifelse(lab == 'infantstudiesubc',old$RA_achievement_coursework[1],RA_achievement_coursework))
+
 # 12 kokuhamburg             3
+# keep middle because it's most complete, add extra info from newest
+
+newest <- lab_questionnaire_raw %>%
+  filter((lab == 'kokuhamburg' & StartDate == '2017-05-15 10:30:35'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'kokuhamburg' & StartDate == '2017-05-15 10:30:35')) %>%
+  filter(!(lab == 'kokuhamburg' & StartDate == '2017-04-28 03:23:47')) %>% 
+  mutate(PlannedStart = ifelse(lab == 'kokuhamburg',newest$PlannedStart[1],PlannedStart))
+
 # 13 kyotobabylab            2
+#Keep most things from most recent completion, but add a few columns that are present in older version and missing in new version
+
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'kyotobabylab' & StartDate == '2017-05-05 08:17:04'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'kyotobabylab' & StartDate == '2017-05-05 08:17:04')) %>%
+  mutate(GazeFollow_stoppingrule = ifelse(lab == 'kyotobabylab', old$GazeFollow_stoppingrule[1],GazeFollow_stoppingrule)) %>% 
+  mutate(Contrib_GazeFollowN_12_15_mono = ifelse(lab == 'kyotobabylab', old$Contrib_GazeFollowN_12_15_mono[1],Contrib_GazeFollowN_12_15_mono)) %>% 
+  mutate(GazeFollow_SecondSession = ifelse(lab == 'kyotobabylab', old$GazeFollow_SecondSession[1],GazeFollow_SecondSession)) %>% 
+  mutate(GazeFollow_method = ifelse(lab == 'kyotobabylab', old$GazeFollow_method[1],GazeFollow_method)) 
+  
 # 14 lancaster               2
+#Keep most things from most recent completion, but ExperimenterLocation_other from older version
+
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'lancaster' & StartDate == '2018-03-12 04:28:47'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'lancaster' & StartDate == '2018-03-12 04:28:47')) %>%
+  mutate(ExperimenterLocation_other = ifelse(lab == 'lancaster', old$ExperimenterLocation_other[1],ExperimenterLocation_other))
+
 # 15 langlabucla             2
+# Second version is complete, first version has some of the same information but it incomplete, keeping second version
+lab_questionnaire_raw <- lab_questionnaire_raw %>% 
+  filter(!(lab == 'langlabucla' & StartDate == '2017-05-09 10:53:50'))
+
 # 16 lscppsl                 2
+# Second version is complete, first version has some of the same information but it incomplete, keeping second version
+lab_questionnaire_raw <- lab_questionnaire_raw %>% 
+  filter(!(lab == 'lscppsl' & StartDate == '2017-11-30 10:47:16'))
+
 # 17 trainorlab              4
+# Last version is complete, earlier versions have some of the same information but are incomplete, keeping only most recent version
+lab_questionnaire_raw <- lab_questionnaire_raw %>% 
+  filter(!(lab == 'trainorlab' & StartDate == '2017-07-15 11:43:28')) %>% 
+  filter(!(lab == 'trainorlab' & StartDate == '2017-07-17 09:16:51')) %>% 
+  filter(!(lab == 'trainorlab' & StartDate == '2017-07-17 09:12:28')) 
+
+
 # 18 unlvmusiclab            2
+# Second version seems to be most current and complete
+lab_questionnaire_raw <- lab_questionnaire_raw %>% 
+  filter(!(lab == 'unlvmusiclab' & StartDate == '2017-08-12 16:11:09')) 
+
 # 19 weescienceedinburgh     2
+# Second version is complete, first version has some of the same information but it incomplete, keeping second version
+lab_questionnaire_raw <- lab_questionnaire_raw %>% 
+  filter(!(lab == 'weescienceedinburgh' & StartDate == '2017-06-08 10:19:54'))
 
 #######
 # The same, for lab_debrief
