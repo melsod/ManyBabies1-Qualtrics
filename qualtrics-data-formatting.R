@@ -180,7 +180,7 @@ q_duplicates <- lab_questionnaire_raw %>%
   filter(n > 1)
 
 View(filter(lab_questionnaire_raw, lab %in% q_duplicates$lab))
-View(filter(lab_questionnaire_raw, lab == 'baldwinlabuoregon'))
+View(filter(lab_questionnaire_raw, lab == 'nusinfantlanguagecentre'))
 
 # StartDate is not being recognized in filter commands because its class is POSIXct (date format). 
 # Here I'm changing it to a character so it will be recognized.
@@ -365,6 +365,16 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
 # Second version is complete, first version has some of the same information but it incomplete, keeping second version
 lab_questionnaire_raw <- lab_questionnaire_raw %>% 
   filter(!(lab == 'weescienceedinburgh' & StartDate == '2017-06-08 10:19:54'))
+
+# 20 nusinfantlanguagecentre
+#Keep most things from most recent completion, but ExperimenterLocation_other from older version
+
+old <- lab_questionnaire_raw %>%
+  filter((lab == 'nusinfantlanguagecentre' & StartDate == '2017-11-14 06:11:41'))
+
+lab_questionnaire_raw <- lab_questionnaire_raw %>%
+  filter(!(lab == 'nusinfantlanguagecentre' & StartDate == '2017-11-14 06:11:41')) %>%
+  mutate(dBA = ifelse(lab == 'nusinfantlanguagecentre', old$dBA[1],dBA))
 
 #######
 # The same, for lab_debrief
