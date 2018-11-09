@@ -89,6 +89,13 @@ lab_debrief_raw$lab[lab_debrief_raw$lab ==  "lllliverpoollanguagelab"] <- "lllli
 lab_debrief_raw$lab[lab_debrief_raw$lab == "cfnuon"] <- "cfnuofn"
 lab_debrief_raw$lab[lab_debrief_raw$lab == "infantlabsingapore"] <- "nusinfantlanguagecentre"
 lab_debrief_raw$lab[lab_debrief_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "ispdevlabmcgill"] <- "isplabmcgill"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
+lab_debrief_raw$lab[lab_debrief_raw$lab == "babylabwesternsydney"] <- "babylabkingswood"
+
+# also get rid of test trial in lab_debrief_raw
+lab_debrief_raw <- lab_debrief_raw %>% 
+  filter(lab != "btibil")
 
 lab_secondary_raw$lab[lab_secondary_raw$lab == "mindevlabbicocca"] <- "minddevlabbicocca"
 lab_secondary_raw$lab[lab_secondary_raw$lab == "umbbabylab"] <- "babylabumassb"
@@ -103,6 +110,7 @@ lab_secondary_raw$lab[lab_secondary_raw$lab == "infantlabsingapore"] <- "nusinfa
 lab_secondary_raw$lab[lab_secondary_raw$lab == "nusbabylab"] <- "nusinfantlanguagecentre"
 lab_secondary_raw$lab[lab_secondary_raw$lab == "cfnuon"] <- "cfnuofn"
 lab_secondary_raw$lab[lab_secondary_raw$lab == "babyling-oslo"] <- "babylingoslo"
+lab_secondary_raw$lab[lab_secondary_raw$lab == "babylabwesternsydney"] <- "babylabkingswood"
 
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "babylabparisdescartes2"] <- "lppparisdescartes2"
 lab_questionnaire_raw$lab[lab_questionnaire_raw$lab == "lcd"] <- "lcdfsu"
@@ -293,8 +301,6 @@ lab_questionnaire_raw <- lab_questionnaire_raw %>%
   mutate(PlannedEnd = ifelse(lab == 'escompicbsleipzig',old$PlannedEnd[1],PlannedEnd))
 
 # 11 infantstudiesubc        2
-View(filter(lab_questionnaire_raw, lab == 'infantstudiesubc'))
-
 #Keep most recent, add more informative answers from older one
 #older version has more specific end date, so keeping that
 old <- lab_questionnaire_raw %>%
