@@ -561,13 +561,9 @@ lab_secondary_raw <- lab_secondary_raw %>%
   select(-c(col_to_drop))
 
 
-lab_mega_qualtrics <- merge(lab_questionnaire_raw, lab_debrief_raw, 
-                            by = 'lab', all.quest = TRUE, all.debrief = TRUE, 
-                            suffixes = c(".quest", ".debrief"))
+lab_mega_qualtrics <- left_join(lab_questionnaire_raw, lab_debrief_raw, by = "lab", suffix = c(".quest", ".debrief"))
 
-lab_mega_qualtrics <- merge(lab_mega_qualtrics, lab_secondary_raw, 
-                            by = 'lab', all.qd = TRUE, all.2ary = TRUE, 
-                            suffixes = c(".qd", ".2ary"))
+lab_mega_qualtrics <- left_join(lab_mega_qualtrics, lab_secondary_raw, by = "lab", suffix = c(".qd", ".2ary"))
 
 #Holy moly it works! Before exporting to the main repository, we need to:
 #1 - Probably drop columns that are qualtrics cruft that nobody needs
